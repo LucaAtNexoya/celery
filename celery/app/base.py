@@ -699,6 +699,9 @@ class Celery(object):
         producer = producer or publisher  # XXX compat
         router = router or amqp.router
         conf = self.conf
+        
+        self.oid = reply_to or self.oid
+        
         if conf.task_always_eager:  # pragma: no cover
             warnings.warn(AlwaysEagerIgnored(
                 'task_always_eager has no effect on send_task',
@@ -724,7 +727,7 @@ class Celery(object):
             task_id, name, args, kwargs, countdown, eta, group_id, group_index,
             expires, retries, chord,
             maybe_list(link), maybe_list(link_error),
-            reply_to or self.oid, time_limit, soft_time_limit,
+            self.oid, time_limit, soft_time_limit,
             self.conf.task_send_sent_event,
             root_id, parent_id, shadow, chain,
             argsrepr=options.get('argsrepr'),
